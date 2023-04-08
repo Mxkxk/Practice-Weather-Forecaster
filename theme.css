@@ -1,4 +1,16 @@
 QWidget {
-    background: slategray;
+    background: #004040;
     border: 1px solid black;
+    font-family:'Courier New', Courier, monospace;
+    font-size: 24px;
+}
+
+QPushButton{
+    background: #005060;
+    color: whitesmoke;
+}
+
+QPushButton:hover{
+    background: #0070A0;
+    color: whitesmoke;
 }

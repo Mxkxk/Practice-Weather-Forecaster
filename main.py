@@ -11,17 +11,21 @@ class MainWindow(QW.QWidget):
 
         self.setWindowTitle(CustomOptions.MAIN_NAME)
 
+        
+
         self.button = QW.QPushButton("Click me!")
         self.button.setFlat(True)
         self.text = QW.QLabel("Hello World", alignment = QC.Qt.AlignCenter)
 
-        layout = QW.QVBoxLayout(self)
-        layout.addWidget(self.text)
-        layout.addWidget(self.button)
-
-        self.setLayout(layout)
+        self.layout = QW.QVBoxLayout(self)
+        self.layout.addWidget(self.text)
+        self.layout.addWidget(self.button)
         
+        self.setLayout(self.layout)
+        
+        self.setMenu()
         self.setStyle()
+        
 
         
     def setStyle(self):
@@ -35,8 +39,19 @@ class MainWindow(QW.QWidget):
             theme_file.close()
 
 
+    def setMenu(self):
+        self.__menuBar = QW.QHBoxLayout()
 
+        self.__menus = {}
 
+        for menu in CustomOptions.MENU:
+            self.__menus[menu] = QW.QPushButton(menu)
+            self.__menuBar.addWidget(self.__menus[menu])
+            
+        self.layout.addLayout(self.__menuBar)
+
+        #for k in self.__menus.keys():
+        #    print(f"{k} : {self.__menus[k]}")
 
 if __name__ == "__main__":
     app = QW.QApplication([])
