@@ -1,32 +1,41 @@
 import sys
 import PySide6.QtWidgets as QW
-from PySide6.QtGui import QScreen
 import PySide6.QtCore as QC
 
 import options as CustomOptions
+from widgets import About, History, Weather
+
 
 class MainWindow(QW.QWidget):
     def __init__(self):
         super().__init__()
 
         self.setWindowTitle(CustomOptions.MAIN_NAME)
-
         
-
         self.button = QW.QPushButton("Click me!")
         self.button.setFlat(True)
         self.text = QW.QLabel("Hello World", alignment = QC.Qt.AlignCenter)
 
+
+        #set main layout for app
         self.layout = QW.QVBoxLayout(self)
-        self.layout.addWidget(self.text)
-        self.layout.addWidget(self.button)
+
+        #set main layout for info output
+        self.info_layout = QW.QStackedLayout()
+        self.layout.addLayout(self.info_layout)
+
+        self.weather = Weather()
+        self.history = History()
+        self.about = About()
+        
+        self.info_layout.addWidget(self.weather)
+        self.info_layout.addWidget(self.history)
+        self.info_layout.addWidget(self.about)
         
         self.setLayout(self.layout)
         
         self.setMenu()
         self.setStyle()
-        
-
         
     def setStyle(self):
         theme_file = None
@@ -38,23 +47,42 @@ class MainWindow(QW.QWidget):
             self.setStyleSheet(theme_file.read())
             theme_file.close()
 
-
     def setMenu(self):
-        self.__menuBar = QW.QHBoxLayout()
-
-        self.__menus = {}
+        self.menuBar = QW.QHBoxLayout()
+        self.menus = {}
 
         for menu in CustomOptions.MENU:
-            self.__menus[menu] = QW.QPushButton(menu)
-            self.__menuBar.addWidget(self.__menus[menu])
-            
-        self.layout.addLayout(self.__menuBar)
+            self.menus[menu] = QW.QPushButton(menu)
+            self.menuBar.addWidget(self.__menus[menu])
+        
+        self.menus[CustomOptions.MENU[0]].clicked.connect(self.weather_menu)
+        self.menus[CustomOptions.MENU[1]].clicked.connect(self.history_menu)
+        self.menus[CustomOptions.MENU[2]].clicked.connect(self.about_menu)
+        self.menus[CustomOptions.MENU[3]].clicked.connect(self.close_menu)
+        
+        self.layout.addLayout(self.menuBar)
 
-        #for k in self.__menus.keys():
-        #    print(f"{k} : {self.__menus[k]}")
+    @QC.Slot()
+    def weather_menu(self):
+        self.info_layout.setCurrentIndex(0)
+        self.setWindowTitle(CustomOptions.MAIN_NAME + ": " + CustomOptions.WEATHER_NAME)
+
+    @QC.Slot()
+    def history_menu(self):
+        self.info_layout.setCurrentIndex(1)
+        self.setWindowTitle(CustomOptions.MAIN_NAME + ": " + CustomOptions.HISTORY_NAME)
+
+    @QC.Slot()
+    def about_menu(self):
+        self.info_layout.setCurrentIndex(2)
+        self.setWindowTitle(CustomOptions.MAIN_NAME + ": " + CustomOptions.ABOUT_NAME)
+
+    @QC.Slot()
+    def close_menu(self):
+        QW.QApplication.exit()
 
 if __name__ == "__main__":
-    app = QW.QApplication([])
+    app = QW.QApplication()
 
     widget = MainWindow()
     widget.resize(800, 600)
