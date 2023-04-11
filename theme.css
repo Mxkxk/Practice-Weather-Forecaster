@@ -5,6 +5,12 @@ QWidget {
     font-size: 24px;
 }
 
+QLabel {
+    color: whitesmoke;
+}
+#name_label{
+    font-size: 40px;
+}
 QPushButton{
     background: #005060;
     color: whitesmoke;
@@ -13,4 +19,9 @@ QPushButton{
 QPushButton:hover{
     background: #0070A0;
     color: whitesmoke;
+}
+
+QPushButton:pressed{
+    background: #20C0c0;
+    color: black;
 }
