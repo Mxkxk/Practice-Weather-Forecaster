@@ -3,17 +3,22 @@ QWidget {
     border: 1px solid black;
     font-family:'Courier New', Courier, monospace;
     font-size: 24px;
+    color: whitesmoke;
 }
 
 QLabel {
     color: whitesmoke;
+    border: none;
 }
 #name_label{
     font-size: 40px;
+    border: 3px black;
 }
+
 QPushButton{
     background: #005060;
     color: whitesmoke;
+    padding: 0 10px;
 }
 
 QPushButton:hover{
@@ -24,4 +29,11 @@ QPushButton:hover{
 QPushButton:pressed{
     background: #20C0c0;
     color: black;
+}
+
+QRadioButton{
+    border: none;
+    color: whitesmoke;
+    padding: 0px;
+    margin: 0px;
 }
