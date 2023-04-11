@@ -1,9 +1,10 @@
 import sys
 import PySide6.QtWidgets as QW
+import PySide6.QtGui as QG
 import PySide6.QtCore as QC
-
+import pandas as pd
 import options as CustomOptions
-from widgets import About, History, Weather
+from widgets import About, History, Weather, Message
 
 
 class MainWindow(QW.QWidget):
@@ -11,12 +12,7 @@ class MainWindow(QW.QWidget):
         super().__init__()
 
         self.setWindowTitle(CustomOptions.MAIN_NAME)
-        
-        self.button = QW.QPushButton("Click me!")
-        self.button.setFlat(True)
-        self.text = QW.QLabel("Hello World", alignment = QC.Qt.AlignCenter)
-
-
+        self.setWindowIcon(QG.QPixmap(CustomOptions.ICON))
         #set main layout for app
         self.layout = QW.QVBoxLayout(self)
 
@@ -36,6 +32,9 @@ class MainWindow(QW.QWidget):
         
         self.setMenu()
         self.setStyle()
+
+        self.data = {}
+        self.data["Index"] = '0000'
         
     def setStyle(self):
         theme_file = None
@@ -53,18 +52,22 @@ class MainWindow(QW.QWidget):
 
         for menu in CustomOptions.MENU:
             self.menus[menu] = QW.QPushButton(menu)
-            self.menuBar.addWidget(self.__menus[menu])
+            self.menuBar.addWidget(self.menus[menu])
         
         self.menus[CustomOptions.MENU[0]].clicked.connect(self.weather_menu)
         self.menus[CustomOptions.MENU[1]].clicked.connect(self.history_menu)
         self.menus[CustomOptions.MENU[2]].clicked.connect(self.about_menu)
         self.menus[CustomOptions.MENU[3]].clicked.connect(self.close_menu)
         
-        self.layout.addLayout(self.menuBar)
+        self.layout.addLayout(self.menuBar)        
+
 
     @QC.Slot()
     def weather_menu(self):
         self.info_layout.setCurrentIndex(0)
+        self.weather.inputForm()
+        self.weather.edit_index.setText(self.data["Index"])
+        self.weather.button_index.clicked.connect(self.check_index)
         self.setWindowTitle(CustomOptions.MAIN_NAME + ": " + CustomOptions.WEATHER_NAME)
 
     @QC.Slot()
@@ -80,6 +83,21 @@ class MainWindow(QW.QWidget):
     @QC.Slot()
     def close_menu(self):
         QW.QApplication.exit()
+
+    @QC.Slot()
+    def check_index(self):
+        df = pd.read_csv(CustomOptions.HOUSES)
+        self.data["Index"] = self.weather.edit_index.text()
+        try: 
+            self.data["City"] = df.query(f'Index == {self.weather.edit_index.text()}')
+        except: 
+            Message(CustomOptions.MESSAGE_ERROR, "Невірно уведні дані", self.styleSheet())
+
+        if len(self.data["City"]) < 1: 
+            Message(CustomOptions.MESSAGE_ERROR, "Індекс не знайдено, проте ще можна багато тексту написати", self.styleSheet())
+        else: 
+            del self.weather.form
+
 
 if __name__ == "__main__":
     app = QW.QApplication()
