@@ -15,6 +15,10 @@ QLabel {
     border: 3px black;
 }
 
+#forecast{
+    border-bottom: 2px solid #20C0c0;
+}
+
 QPushButton{
     background: #005060;
     color: whitesmoke;
