@@ -45,12 +45,34 @@ class History(QW.QWidget):
 
         self.layout = QW.QVBoxLayout()
         
-        self.list = QW.QListView()
+        self.choose_button = QW.QPushButton(CustomOptions.HISTORY_CHOOSE)
+
+        self.list = QW.QListWidget()
+
+        self.layout.addWidget(self.choose_button)
         self.layout.addWidget(self.list)
+        
+
+        '''
+        Data is stored in list of dictionaries
+        Index: str of index digits
+        City: str of city name
+        Location: str of float latitude and longitude
+        Oblast: str of oblast(Eng) 
+        Oblast_UA: str of oblast(Ukr)
+        Weather: list of weather and date:
+            [0]: date of weather data query
+            [1::]: dictionaries of weather data:
+                Date: list of day date (YYYY, MM, DD)
+                Conditions: str of weather conditions
+                Min: str of minimal temperature 
+                Max: str of maximal temperature        
+        '''
         self.load_data = []
         self.setLayout(self.layout)
 
         self.readHistory()
+        self.generaleList()
 
     def read_file(self, name):
             try:
@@ -86,9 +108,14 @@ class History(QW.QWidget):
         if self.read_file(CustomOptions.HISTORY) is None:
             self.write_file(CustomOptions.HISTORY, '[]')
         self.load_data = json.loads(self.read_file(CustomOptions.HISTORY))
-        print(self.load_data)
+        #print(self.load_data)       
 
-        
+    def generaleList(self):
+        if self.list.count() > 0:
+            self.list.clear()
+        for data in self.load_data:
+            date = ".".join(data["Weather"][0].split('-')[::-1])
+            self.list.addItem(f'{data["City"]}:{date}') #\n\t\t\t{data["Weather"][1]["Date"][::-1]}')
 
     def setStyle(self):
         theme_file = None
@@ -141,7 +168,6 @@ class Weather(QW.QWidget):
 
         self.button_index = QW.QPushButton(text=CustomOptions.INDEX_PUSHBUTTON)
         
-
         self.form_layout.addWidget(self.edit_index)
         self.form_layout.addWidget(self.box_index)
         self.form_layout.addWidget(self.button_index)
@@ -150,7 +176,7 @@ class Weather(QW.QWidget):
         self.form.setVisible(True)
         self.form.setStyleSheet(self.styleSheet())
 
-    def generateLayout(self, data, city = ''):
+    def generateLayout(self, data):
         self.weather_widgets_layout = QW.QHBoxLayout()
 
         if data[0] == "empty":
@@ -176,7 +202,7 @@ class Weather(QW.QWidget):
         labels.append(QW.QLabel(text=data["Max"]))
         labels.append(QW.QLabel(text=data["Min"]))
         
-        QW.QLabel().setObjectName('forecast')
+        #QW.QLabel().setObjectName('forecast')
 
         for l in labels:
             l.setAlignment(QC.Qt.AlignmentFlag.AlignCenter)
