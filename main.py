@@ -7,6 +7,7 @@ import urllib.parse as pr
 import pandas as pd
 import json as js
 import re
+
 from datetime import date
 import options as CustomOptions
 from widgets import About, History, Weather, Message
@@ -53,6 +54,8 @@ class MainWindow(QW.QWidget):
         self.weather.generateLayout(CustomOptions.EMPTY_DATA)
 
         self.history = History()
+        self.history.choose_button.clicked.connect(self.history_load)
+
         self.about = About()
         
         self.info_layout.addWidget(self.weather)
@@ -127,13 +130,24 @@ class MainWindow(QW.QWidget):
         self.setWindowTitle(CustomOptions.MAIN_NAME + ": " + CustomOptions.HISTORY_NAME)
 
     @QC.Slot()
+    def history_load(self):
+        if self.history.list.currentRow() == -1 and self.history.list.count() > 0:
+            Message(CustomOptions.MESSAGE_ERROR, "Ви нічого не вибрали(")
+        if self.history.list.currentRow() >= 0:
+            self.info_layout.setCurrentIndex(0)
+            self.weather.generateLayout(self.history.load_data[self.history.list.currentRow()]["Weather"])
+            date = ".".join(self.history.load_data[self.history.list.currentRow()]["Weather"][0].split('-')[::-1])
+            self.setWindowTitle(f'{CustomOptions.MAIN_NAME} : {CustomOptions.WEATHER_NAME} - {self.history.load_data[self.history.list.currentRow()]["City"]} ({date})')
+        
+
+    @QC.Slot()
     def about_menu(self):
         self.info_layout.setCurrentIndex(2)
         self.setWindowTitle(CustomOptions.MAIN_NAME + ": " + CustomOptions.ABOUT_NAME)
 
     @QC.Slot()
     def close_menu(self):
-        QW.QApplication.exit()
+        QW.QApplication.exit()  
 
     @QC.Slot()
     def check_index(self):
@@ -151,11 +165,7 @@ class MainWindow(QW.QWidget):
                 self.data["Oblast"] = CustomOptions.DICTIONARY[self.data["City"]["Oblast"].values[0]] + " Oblast"
                 self.data["City"] = '-'.join(self.data["City"]["City"].values[0].split(' ')[1:])
                 print(f'{self.data["Oblast"]} {self.data["City"].lower()}')
-                self.getWeather(self.weather.radio_type)
-                if len(self.data["Weather"]) > 0:
-                    self.history.saveHistory(self.data)
-                    self.weather.generateLayout(self.data["Weather"], city=self.data["City"])
-                    self.setWindowTitle(CustomOptions.MAIN_NAME + ": " + CustomOptions.WEATHER_NAME + " - " + self.data["City"])
+                self.getWeather(self.weather.radio_type)                
             else:
                 Message(CustomOptions.MESSAGE_ERROR, "Індекс не знайдено", self.styleSheet())
 
@@ -172,6 +182,10 @@ class MainWindow(QW.QWidget):
         except:
             self.data["Index"] = ""
 
+        if len(self.data["Weather"]) > 0:
+            self.history.saveHistory(self.data)
+            self.weather.generateLayout(self.data["Weather"])
+            self.setWindowTitle(CustomOptions.MAIN_NAME + ": " + CustomOptions.WEATHER_NAME + " - " + self.data["City"])
 
         print(self.data)
             
