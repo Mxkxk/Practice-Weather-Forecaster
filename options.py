@@ -5,6 +5,7 @@ ABOUT_NAME = "Про програму"
 HISTORY_NAME = "Історія"
 WEATHER_NAME = "Прогноз погоди"
 MENU = ["Погода", "Історія", "Про програму", "Вийти"]
+HISTORY_CHOOSE = "Виберіть історію"
 #Weather data
 WEATHER_API_KEY = "5efcc8b5b685d99dbcf01585a90702ef"
 WEATHER_API = "https://api.openweathermap.org/data/2.5/weather?lat=$lat&lon=$lon&appid=$key&units=metric"
