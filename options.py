@@ -8,8 +8,6 @@ MENU = ["Погода", "Історія", "Про програму", "Вийти
 HISTORY_CHOOSE = "Вивести запис"
 HISTORY_DELETE = "Видалити запис"
 #Weather data
-WEATHER_API_KEY = "5efcc8b5b685d99dbcf01585a90702ef"
-WEATHER_API = "https://api.openweathermap.org/data/2.5/weather?lat=$lat&lon=$lon&appid=$key&units=metric"
 SINOPTIK = "//ua.sinoptik.ua/погода-"
 ICON = "resources/icon.png"
 HOUSES = "resources/houses.csv"
