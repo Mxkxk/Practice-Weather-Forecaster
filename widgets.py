@@ -8,7 +8,7 @@ import options as CustomOptions
 
 class About(QW.QWidget):
     def __init__(self):
-        super().__init__()        
+        super().__init__()
         self.setStyle()
 
         self.layout = QW.QVBoxLayout()
@@ -46,10 +46,12 @@ class History(QW.QWidget):
         self.layout = QW.QVBoxLayout()
         
         self.choose_button = QW.QPushButton(CustomOptions.HISTORY_CHOOSE)
+        self.delete_button = QW.QPushButton(CustomOptions.HISTORY_DELETE)
 
         self.list = QW.QListWidget()
 
         self.layout.addWidget(self.choose_button)
+        self.layout.addWidget(self.delete_button)
         self.layout.addWidget(self.list)
         
 
@@ -97,25 +99,28 @@ class History(QW.QWidget):
         with open(name, 'a+') as f:
             f.write(text)
 
-    def saveHistory(self, weather_data):        
+    def saveHistory(self, weather_data = None): 
         if self.read_file(CustomOptions.HISTORY) is None:
             self.write_file(CustomOptions.HISTORY, '[]')
         data = json.loads(self.read_file(CustomOptions.HISTORY))
-        data.append(weather_data)
+        if weather_data is not None:
+            data.append(weather_data)
+        else:
+            data = self.load_data
         self.rewrite_file(CustomOptions.HISTORY, json.dumps(data))
-            
+
     def readHistory(self):  
         if self.read_file(CustomOptions.HISTORY) is None:
             self.write_file(CustomOptions.HISTORY, '[]')
         self.load_data = json.loads(self.read_file(CustomOptions.HISTORY))
-        #print(self.load_data)       
+        #print(self.load_data)
 
     def generaleList(self):
         if self.list.count() > 0:
             self.list.clear()
-        for data in self.load_data:
+        for data in self.load_data[::-1]:
             date = ".".join(data["Weather"][0].split('-')[::-1])
-            self.list.addItem(f'{data["City"]}:{date}') #\n\t\t\t{data["Weather"][1]["Date"][::-1]}')
+            self.list.addItem(f'{data["City"]}:{date}')
 
     def setStyle(self):
         theme_file = None
@@ -146,16 +151,16 @@ class Weather(QW.QWidget):
 
         self.form_layout = QW.QVBoxLayout()
 
-        self.edit_index = QW.QLineEdit()    
+        self.edit_index = QW.QLineEdit()
         self.edit_index.setPlaceholderText(CustomOptions.INDEX_LABEL)
         self.edit_index.setAlignment(QC.Qt.AlignmentFlag.AlignCenter)
 
-        self.box_index = QW.QGroupBox(title=CustomOptions.INDEX_RADIO_TITLE)        
+        self.box_index = QW.QGroupBox(title=CustomOptions.INDEX_RADIO_TITLE)
         self.radio = {}
         self.radio["index"] = QW.QRadioButton(text=CustomOptions.INDEX_RADIO_INDEX)
         self.radio["index"].setChecked(True)
         self.radio["city"] = QW.QRadioButton(text=CustomOptions.INDEX_RADIO_CITY)
-        #self.radio["location"] = QW.QRadioButton(text=CustomOptions.INDEX_RADIO_LOC)
+        self.radio["location"] = QW.QRadioButton(text=CustomOptions.INDEX_RADIO_LOC)
 
         box_index_layout = QW.QVBoxLayout(self.box_index)
         box_index_layout.setAlignment(QC.Qt.AlignmentFlag.AlignBottom)
@@ -236,6 +241,7 @@ class Message():
         box.setWindowTitle(title)
         box.setText(text)
         box.setWindowIcon(QG.QPixmap(CustomOptions.ICON))
+        box.setObjectName("message")
         box.setStyleSheet(styleSheet)
         box.resize(QC.QSize(300, 150))
         box.exec()
