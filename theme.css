@@ -10,6 +10,7 @@ QLabel {
     color: whitesmoke;
     border: none;
 }
+
 #name_label{
     font-size: 40px;
     border: 3px black;
@@ -40,4 +41,8 @@ QRadioButton{
     color: whitesmoke;
     padding: 0px;
     margin: 0px;
+}
+
+#message QLabel{
+    font-size: 28px;
 }
