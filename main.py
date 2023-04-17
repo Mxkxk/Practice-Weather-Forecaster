@@ -18,6 +18,7 @@ class MainWindow(QW.QWidget):
         super().__init__()
 
         self.setWindowTitle(CustomOptions.MAIN_NAME)
+        self.setMinimumSize(600, 400)
         self.setWindowIcon(QG.QPixmap(CustomOptions.ICON))
         #set main layout for app
 
