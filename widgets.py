@@ -13,15 +13,23 @@ class About(QW.QWidget):
 
         self.layout = QW.QVBoxLayout()
         
-        self.text_about = QW.QTextEdit(CustomOptions.MAIN_NAME)
+        self.text_about = QW.QTextEdit()
         self.text_about.setObjectName('text_about')
-        self.text_about.setEnabled(False)
-        self.text_about.setAlignment(QC.Qt.AlignmentFlag.AlignRight)
-        about_add_text = lambda s: self.text_about.setText(self.text_about.toPlainText()+s)
-        about_add_text("\n\t" + CustomOptions.ABOUT_TEXT)
-        about_add_text("\n\tВерсія QT:" + str(QC.qVersion()))
-        
-        
+        self.text_about.setReadOnly(True)
+        #self.text_about.setAlignment(QC.Qt.AlignmentFlag.AlignHCenter)
+        #print(f"About alignment {self.text_about.alignment()}")
+        about_text_doc = QG.QTextDocument()
+        about_text_doc.setDefaultStyleSheet(self.styleSheet())
+        about_text_add = lambda s: about_text_doc.setHtml(about_text_doc.toHtml()+s)
+        about_text_add(f"<h1>{CustomOptions.MAIN_NAME}</h1>")
+        about_text_add(f"<p>{CustomOptions.ABOUT_TEXT}</p>")
+        about_text_add(f"<p>Версія QT: {str(QC.qVersion())}</p>")
+        about_text_add(f"<p>Дані локацій: {CustomOptions.ABOUT_OSM}</p>")
+        about_text_add(f"<p>Погодні дані: {CustomOptions.ABOUT_WEATHER}</p>")
+        about_text_add(f"<p>Автор: {CustomOptions.ABOUT_AUTHOR_NAME}</p>")
+        about_text_add(f"<p>Контакти: {CustomOptions.ABOUT_AUTHOR_MAIL}</p>")
+        self.text_about.setDocument(about_text_doc)
+        print(self.text_about.toHtml())
 
         self.layout.addWidget(self.text_about)
 
@@ -59,9 +67,7 @@ class History(QW.QWidget):
         Data is stored in list of dictionaries
         Index: str of index digits
         City: str of city name
-        Location: str of float latitude and longitude
-        Oblast: str of oblast(Eng) 
-        Oblast_UA: str of oblast(Ukr)
+        Location: str of float latitude and longitude        
         Weather: list of weather and date:
             [0]: date of weather data query
             [1::]: dictionaries of weather data:
