@@ -1,8 +1,9 @@
 QWidget {
     background: #004040;
     border: 1px solid black;
-    font-family:'Courier New', Courier, monospace;
-    font-size: 24px;
+    font-family:Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 22px;
+    font-weight: 200;
     color: whitesmoke;
 }
 
@@ -11,9 +12,19 @@ QLabel {
     border: none;
 }
 
-#name_label{
-    font-size: 40px;
-    border: 3px black;
+#text_about{
+    font-size: 30px;
+    border: none;
+}
+h1 {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    text-align: center;
+}
+p{
+    margin: 20px auto;
+    font-size: 22px;
+    text-align: center;
+    /*font-family: 'Courier New', Courier, monospace;*/
 }
 
 #forecast{
